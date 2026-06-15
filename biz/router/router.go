@@ -15,7 +15,7 @@ func Register(r *server.Hertz) {
 	root := r.Group("/")
 	{
 		root.GET("/ping", func(ctx context.Context, c *app.RequestContext) {
-			c.String(consts.StatusOK, "ping")
+			c.String(consts.StatusOK, "pong")
 		})
 	}
 }

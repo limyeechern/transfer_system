@@ -2,9 +2,6 @@
 
 APP_NAME := transfer-system
 
-run:
-	go run ./...
-
 build:
 	go build -o bin/$(APP_NAME) .
 
@@ -17,13 +14,13 @@ fmt:
 clean:
 	rm -rf bin
 
-docker-build:
+build:
 	docker build -t $(APP_NAME):latest .
 
-docker-up:
-	docker compose up --build
+run: build
+	docker compose up --build -d 
 
-docker-down:
+stop:
 	docker compose down
 
 docker-logs:
