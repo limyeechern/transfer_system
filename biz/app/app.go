@@ -7,6 +7,7 @@ import (
 	"transfer_system/biz/dal"
 	"transfer_system/biz/handler"
 	"transfer_system/biz/service/create_account"
+	"transfer_system/biz/service/get_account"
 )
 
 const defaultDatabaseURL = "postgres://transfer_system:transfer_system@127.0.0.1:15432/transfer_system?sslmode=disable"
@@ -34,6 +35,7 @@ func New(ctx context.Context, cfg Config) (*handler.App, func(), error) {
 
 	accountRepository := dal.NewPostgresAccountRepository(pool)
 	createAccountService := create_account.NewCreateAccountService(accountRepository)
+	getAccountService := get_account.NewGetAccountService(accountRepository)
 
 	cleanup := func() {
 		pool.Close()
@@ -41,5 +43,6 @@ func New(ctx context.Context, cfg Config) (*handler.App, func(), error) {
 
 	return handler.NewApp(handler.Dependencies{
 		CreateAccountService: createAccountService,
+		GetAccountService:    getAccountService,
 	}), cleanup, nil
 }

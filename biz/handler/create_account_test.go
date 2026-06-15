@@ -2,6 +2,7 @@ package handler_test
 
 import (
 	"context"
+	"errors"
 	"strings"
 	"testing"
 
@@ -78,6 +79,28 @@ func TestCreateAccountEndpoint(t *testing.T) {
 			name:       "invalid json",
 			body:       `{"account_id":125,"initial_balance":`,
 			wantStatus: consts.StatusBadRequest,
+		},
+		{
+			name:       "internal error",
+			body:       `{"account_id":126,"initial_balance":"100.23344"}`,
+			serviceErr: apperror.ErrInternalError,
+			wantStatus: consts.StatusInternalServerError,
+			wantBody:   apperror.ErrInternalError.Error(),
+			wantReq: &model.NewAccount{
+				AccountID:      126,
+				InitialBalance: "100.23344",
+			},
+		},
+		{
+			name:       "unknown error",
+			body:       `{"account_id":127,"initial_balance":"100.23344"}`,
+			serviceErr: errors.New("database connection failed"),
+			wantStatus: consts.StatusInternalServerError,
+			wantBody:   apperror.ErrInternalError.Error(),
+			wantReq: &model.NewAccount{
+				AccountID:      127,
+				InitialBalance: "100.23344",
+			},
 		},
 	}
 

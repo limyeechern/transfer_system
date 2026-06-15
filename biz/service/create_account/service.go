@@ -42,8 +42,11 @@ func (s *CreateAccountServiceImpl) Create(ctx context.Context, req *model.NewAcc
 }
 
 func (s *CreateAccountServiceImpl) Validate(ctx context.Context, req *model.NewAccount) error {
-	if req == nil || s.accounts == nil {
-		return apperror.ErrInvalidAccount
+	if req == nil {
+		return apperror.ErrInvalidRequest
+	}
+	if s.accounts == nil {
+		return apperror.ErrInternalError
 	}
 	if req.AccountID <= 0 {
 		return apperror.ErrInvalidAccount

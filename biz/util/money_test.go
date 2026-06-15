@@ -35,3 +35,25 @@ func TestParseAmount5DP(t *testing.T) {
 		})
 	}
 }
+
+func TestFormatAmount5DP(t *testing.T) {
+	tests := []struct {
+		name  string
+		input int64
+		want  string
+	}{
+		{name: "five decimal places", input: 10023344, want: "100.23344"},
+		{name: "pads fewer decimals", input: 10023000, want: "100.23000"},
+		{name: "whole number", input: 10000000, want: "100.00000"},
+		{name: "zero", input: 0, want: "0.00000"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := FormatAmount5DP(tt.input)
+			if got != tt.want {
+				t.Fatalf("got %q, want %q", got, tt.want)
+			}
+		})
+	}
+}

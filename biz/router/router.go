@@ -19,6 +19,7 @@ func Register(r *server.Hertz, handlerApp *handler.App) {
 		root.GET("/ping", func(ctx context.Context, c *hertzapp.RequestContext) {
 			c.String(consts.StatusOK, "pong")
 		})
+		root.GET("/accounts/:account_id", handlerApp.GetAccount)
 		root.POST("/accounts", handlerApp.CreateAccount)
 	}
 }

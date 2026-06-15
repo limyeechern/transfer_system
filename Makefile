@@ -18,7 +18,7 @@ run: stop build
 	docker compose up --build -d 
 
 stop:
-	docker compose down
+	docker compose down -v
 
 docker-logs:
 	docker compose logs -f

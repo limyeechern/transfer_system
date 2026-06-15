@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -8,6 +9,8 @@ import (
 )
 
 const AmountScale = int64(100000)
+
+const AmountDecimalPlaces = 5
 
 func ParseAmount5DP(amount string) (int64, error) {
 	amount = strings.TrimSpace(amount)
@@ -42,6 +45,18 @@ func ParseAmount5DP(amount string) (int64, error) {
 		return 0, apperror.ErrInvalidAmount
 	}
 	return scaled, nil
+}
+
+func FormatAmount5DP(amount int64) string {
+	sign := ""
+	if amount < 0 {
+		sign = "-"
+		amount = -amount
+	}
+
+	whole := amount / AmountScale
+	fraction := amount % AmountScale
+	return fmt.Sprintf("%s%d.%0*d", sign, whole, AmountDecimalPlaces, fraction)
 }
 
 func allDigits(value string) bool {

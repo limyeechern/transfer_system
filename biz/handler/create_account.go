@@ -21,7 +21,7 @@ func (a *App) CreateAccount(ctx context.Context, c *app.RequestContext) {
 
 	resp, err := a.CreateAccountResp(ctx, &req)
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		writeError(c, err)
 		return
 	}
 

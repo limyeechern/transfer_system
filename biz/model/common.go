@@ -7,6 +7,10 @@ type Account struct {
 
 type EmptyResponse struct{}
 
+type GetAccount struct {
+	AccountID int64 `json:"account_id"`
+}
+
 type Transaction struct {
 	SourceAccountID      int64   `json:"source_account_id"`
 	DestinationAccountID int64   `json:"destination_account_id"`
