@@ -5,7 +5,7 @@ import (
 
 	"transfer_system/biz/handler"
 
-	"github.com/cloudwego/hertz/pkg/app"
+	hertzapp "github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )
@@ -13,12 +13,12 @@ import (
 /*
 Register registers routes for the transfer system API.
 */
-func Register(r *server.Hertz) {
+func Register(r *server.Hertz, handlerApp *handler.App) {
 	root := r.Group("/")
 	{
-		root.GET("/ping", func(ctx context.Context, c *app.RequestContext) {
+		root.GET("/ping", func(ctx context.Context, c *hertzapp.RequestContext) {
 			c.String(consts.StatusOK, "pong")
 		})
-		root.POST("/accounts", handler.CreateAccount)
+		root.POST("/accounts", handlerApp.CreateAccount)
 	}
 }

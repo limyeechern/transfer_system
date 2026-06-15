@@ -1,8 +1,8 @@
 package model
 
 type Account struct {
-	AccountID int64   `json:"account_id"`
-	Balance   float64 `json:"balance"`
+	AccountID int64  `json:"account_id"`
+	Balance   string `json:"balance"`
 }
 
 type EmptyResponse struct{}
@@ -14,6 +14,6 @@ type Transaction struct {
 }
 
 type NewAccount struct {
-	AccountID      int64   `json:"account_id"`
-	InitialBalance float64 `json:"initial_balance"`
+	AccountID      int64  `json:"account_id"`
+	InitialBalance string `json:"initial_balance"`
 }

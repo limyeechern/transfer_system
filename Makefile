@@ -2,9 +2,6 @@
 
 APP_NAME := transfer-system
 
-build:
-	go build -o bin/$(APP_NAME) .
-
 test:
 	go test ./...
 
@@ -17,7 +14,7 @@ clean:
 build:
 	docker build -t $(APP_NAME):latest .
 
-run: build
+run: stop build
 	docker compose up --build -d 
 
 stop:
