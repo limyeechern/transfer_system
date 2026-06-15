@@ -3,6 +3,7 @@ package create_account
 import (
 	"context"
 
+	"transfer_system/biz/apperror"
 	"transfer_system/biz/dal"
 	"transfer_system/biz/model"
 	"transfer_system/biz/service"
@@ -42,10 +43,10 @@ func (s *CreateAccountServiceImpl) Create(ctx context.Context, req *model.NewAcc
 
 func (s *CreateAccountServiceImpl) Validate(ctx context.Context, req *model.NewAccount) error {
 	if req == nil || s.accounts == nil {
-		return model.ErrInvalidAccount
+		return apperror.ErrInvalidAccount
 	}
 	if req.AccountID <= 0 {
-		return model.ErrInvalidAccount
+		return apperror.ErrInvalidAccount
 	}
 	if _, err := util.ParseAmount5DP(req.InitialBalance); err != nil {
 		return err

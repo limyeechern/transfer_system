@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"transfer_system/biz/apperror"
 	"transfer_system/biz/model"
 
 	"github.com/jackc/pgx/v5/pgconn"
@@ -28,7 +29,7 @@ func (r *PostgresAccountRepository) CreateAccount(ctx context.Context, accountID
 	if err != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) && pgErr.Code == "23505" && pgErr.ConstraintName == "accounts_pkey" {
-			return nil, model.ErrAccountIdAlreadyExists
+			return nil, apperror.ErrAccountIdAlreadyExists
 		}
 		return nil, err
 	}

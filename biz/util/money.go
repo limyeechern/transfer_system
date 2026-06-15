@@ -1,24 +1,23 @@
 package util
 
 import (
-	"errors"
 	"strconv"
 	"strings"
+
+	"transfer_system/biz/apperror"
 )
 
 const AmountScale = int64(100000)
 
-var ErrInvalidAmount = errors.New("invalid amount")
-
 func ParseAmount5DP(amount string) (int64, error) {
 	amount = strings.TrimSpace(amount)
 	if amount == "" {
-		return 0, ErrInvalidAmount
+		return 0, apperror.ErrInvalidAmount
 	}
 
 	parts := strings.Split(amount, ".")
 	if len(parts) > 2 {
-		return 0, ErrInvalidAmount
+		return 0, apperror.ErrInvalidAmount
 	}
 
 	whole := parts[0]
@@ -26,21 +25,21 @@ func ParseAmount5DP(amount string) (int64, error) {
 		whole = "0"
 	}
 	if !allDigits(whole) {
-		return 0, ErrInvalidAmount
+		return 0, apperror.ErrInvalidAmount
 	}
 
 	fraction := ""
 	if len(parts) == 2 {
 		fraction = parts[1]
 		if len(fraction) > 5 || !allDigits(fraction) {
-			return 0, ErrInvalidAmount
+			return 0, apperror.ErrInvalidAmount
 		}
 	}
 
 	fraction += strings.Repeat("0", 5-len(fraction))
 	scaled, err := strconv.ParseInt(whole+fraction, 10, 64)
 	if err != nil {
-		return 0, ErrInvalidAmount
+		return 0, apperror.ErrInvalidAmount
 	}
 	return scaled, nil
 }
