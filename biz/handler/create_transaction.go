@@ -10,7 +10,7 @@ import (
 )
 
 // CreateTransaction .
-// @router /accounts [POST]
+// @router /transactions [POST]
 func (a *App) CreateTransaction(ctx context.Context, c *app.RequestContext) {
 	var req model.Transaction
 	if err := c.BindAndValidate(&req); err != nil {
@@ -30,10 +30,10 @@ func (a *App) CreateTransaction(ctx context.Context, c *app.RequestContext) {
 func (a *App) CreateTransactionResp(ctx context.Context, params *model.Transaction) (*model.EmptyResponse, error) {
 	_, err := a.CreateTransactionService.Create(ctx, params)
 	if err != nil {
-		logrus.WithContext(ctx).WithField("params", params).Error("failed to create account")
+		logrus.WithContext(ctx).WithField("params", params).Error("failed to create transaction")
 		return nil, err
 	}
 
-	logrus.WithContext(ctx).Info("successfully created account")
+	logrus.WithContext(ctx).Info("successfully created transaction")
 	return &model.EmptyResponse{}, nil
 }

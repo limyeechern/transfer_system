@@ -7,6 +7,7 @@ import (
 	"transfer_system/biz/dal"
 	"transfer_system/biz/handler"
 	"transfer_system/biz/service/create_account"
+	"transfer_system/biz/service/create_transaction"
 	"transfer_system/biz/service/get_account"
 )
 
@@ -34,8 +35,10 @@ func New(ctx context.Context, cfg Config) (*handler.App, func(), error) {
 	}
 
 	accountRepository := dal.NewPostgresAccountRepository(pool)
+	transactionRepository := dal.NewPostgresTransactionRepository(pool)
 	createAccountService := create_account.NewCreateAccountService(accountRepository)
 	getAccountService := get_account.NewGetAccountService(accountRepository)
+	createTransactionService := create_transaction.NewCreateTransactionService(transactionRepository)
 
 	cleanup := func() {
 		pool.Close()
@@ -44,5 +47,6 @@ func New(ctx context.Context, cfg Config) (*handler.App, func(), error) {
 	return handler.NewApp(handler.Dependencies{
 		CreateAccountService: createAccountService,
 		GetAccountService:    getAccountService,
+		CreateTransactionService: createTransactionService,
 	}), cleanup, nil
 }

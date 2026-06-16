@@ -21,5 +21,6 @@ func Register(r *server.Hertz, handlerApp *handler.App) {
 		})
 		root.GET("/accounts/:account_id", handlerApp.GetAccount)
 		root.POST("/accounts", handlerApp.CreateAccount)
+		root.POST("/transactions", handlerApp.CreateTransaction)
 	}
 }
