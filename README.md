@@ -81,6 +81,15 @@ curl -X POST http://127.0.0.1:8080/transactions \
   -d '{"source_account_id":123,"destination_account_id":456,"amount":"10.12345"}'
 ```
 
+## Flowchart
+
+### 1. Creating Transaction
+<img width="804" height="774" alt="image" src="https://github.com/user-attachments/assets/6f95e8ba-b07a-4b0e-8872-57b8fc2d7ec7" />
+
+### 2. Getting Account
+<img width="556" height="764" alt="image" src="https://github.com/user-attachments/assets/ac06cb57-0c9f-4feb-8999-d583985678ff" />
+
+
 ## Assumptions
 
 ### 1. Transfer Amount
