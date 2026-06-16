@@ -17,6 +17,7 @@ func statusCodeForError(err error) int {
 	switch {
 	case errors.Is(err, apperror.ErrInvalidRequest),
 		errors.Is(err, apperror.ErrInvalidAccount),
+		errors.Is(err, apperror.ErrInvalidTransaction),
 		errors.Is(err, apperror.ErrInvalidAmount),
 		errors.Is(err, apperror.ErrAccountIdAlreadyExists),
 		errors.Is(err, apperror.ErrInsufficientBalance):
@@ -32,6 +33,7 @@ func messageForError(err error) string {
 	switch {
 	case errors.Is(err, apperror.ErrInvalidRequest),
 		errors.Is(err, apperror.ErrInvalidAccount),
+		errors.Is(err, apperror.ErrInvalidTransaction),
 		errors.Is(err, apperror.ErrInvalidAmount),
 		errors.Is(err, apperror.ErrAccountIdAlreadyExists),
 		errors.Is(err, apperror.ErrInsufficientBalance),
