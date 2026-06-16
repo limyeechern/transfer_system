@@ -5,11 +5,14 @@ services:
       dockerfile: Dockerfile
     environment:
       DATABASE_URL: postgres://transfer_system:transfer_system@postgres:5432/transfer_system?sslmode=disable
+      REDIS_ADDR: redis:6379
     ports:
       - "8080:8080"
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_started
 
   postgres:
     image: postgres:16-alpine
@@ -27,6 +30,11 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
 
 volumes:
   postgres-data:

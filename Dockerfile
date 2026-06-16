@@ -15,6 +15,7 @@ WORKDIR /app
 COPY --from=builder /transfer-system /app/transfer-system
 
 ENV DATABASE_URL=postgres://transfer_system:transfer_system@postgres:5432/transfer_system?sslmode=disable
+ENV REDIS_ADDR=redis:6379
 
 EXPOSE 8080
 
