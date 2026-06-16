@@ -55,21 +55,21 @@ func TestGetAccountEndpoint(t *testing.T) {
 			path:       "/accounts/123",
 			serviceErr: apperror.ErrAccountNotFound,
 			wantStatus: consts.StatusNotFound,
-			wantBody:   apperror.ErrAccountNotFound.Error(),
+			wantBody:   errorJSON("ACCOUNT_NOT_FOUND", apperror.ErrAccountNotFound.Error()),
 			wantReq:    &model.GetAccount{AccountID: 123},
 		},
 		{
 			name:       "invalid account id",
 			path:       "/accounts/not-an-id",
 			wantStatus: consts.StatusBadRequest,
-			wantBody:   apperror.ErrInvalidAccount.Error(),
+			wantBody:   errorJSON("INVALID_ACCOUNT", apperror.ErrInvalidAccount.Error()),
 		},
 		{
 			name:       "internal error",
 			path:       "/accounts/123",
 			serviceErr: apperror.ErrInternalError,
 			wantStatus: consts.StatusInternalServerError,
-			wantBody:   apperror.ErrInternalError.Error(),
+			wantBody:   errorJSON("INTERNAL_ERROR", apperror.ErrInternalError.Error()),
 			wantReq:    &model.GetAccount{AccountID: 123},
 		},
 		{
@@ -77,7 +77,7 @@ func TestGetAccountEndpoint(t *testing.T) {
 			path:       "/accounts/123",
 			serviceErr: errors.New("database connection failed"),
 			wantStatus: consts.StatusInternalServerError,
-			wantBody:   apperror.ErrInternalError.Error(),
+			wantBody:   errorJSON("INTERNAL_ERROR", apperror.ErrInternalError.Error()),
 			wantReq:    &model.GetAccount{AccountID: 123},
 		},
 	}

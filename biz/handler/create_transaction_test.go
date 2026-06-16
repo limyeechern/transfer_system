@@ -58,7 +58,7 @@ func TestCreateTransactionEndpoint(t *testing.T) {
 			body:       `{"source_account_id":123,"destination_account_id":456,"amount":"0"}`,
 			serviceErr: apperror.ErrInvalidAmount,
 			wantStatus: consts.StatusBadRequest,
-			wantBody:   apperror.ErrInvalidAmount.Error(),
+			wantBody:   errorJSON("INVALID_AMOUNT", apperror.ErrInvalidAmount.Error()),
 			wantReq: &model.Transaction{
 				SourceAccountID:      123,
 				DestinationAccountID: 456,
@@ -70,7 +70,7 @@ func TestCreateTransactionEndpoint(t *testing.T) {
 			body:       `{"source_account_id":999,"destination_account_id":456,"amount":"100.12345"}`,
 			serviceErr: apperror.ErrAccountNotFound,
 			wantStatus: consts.StatusNotFound,
-			wantBody:   apperror.ErrAccountNotFound.Error(),
+			wantBody:   errorJSON("ACCOUNT_NOT_FOUND", apperror.ErrAccountNotFound.Error()),
 			wantReq: &model.Transaction{
 				SourceAccountID:      999,
 				DestinationAccountID: 456,
@@ -82,7 +82,7 @@ func TestCreateTransactionEndpoint(t *testing.T) {
 			body:       `{"source_account_id":123,"destination_account_id":456,"amount":"100.12345"}`,
 			serviceErr: apperror.ErrInsufficientBalance,
 			wantStatus: consts.StatusBadRequest,
-			wantBody:   apperror.ErrInsufficientBalance.Error(),
+			wantBody:   errorJSON("INSUFFICIENT_BALANCE", apperror.ErrInsufficientBalance.Error()),
 			wantReq: &model.Transaction{
 				SourceAccountID:      123,
 				DestinationAccountID: 456,
@@ -94,7 +94,7 @@ func TestCreateTransactionEndpoint(t *testing.T) {
 			body:       `{"source_account_id":123,"destination_account_id":123,"amount":"100.12345"}`,
 			serviceErr: apperror.ErrInvalidTransaction,
 			wantStatus: consts.StatusBadRequest,
-			wantBody:   apperror.ErrInvalidTransaction.Error(),
+			wantBody:   errorJSON("INVALID_TRANSACTION", apperror.ErrInvalidTransaction.Error()),
 			wantReq: &model.Transaction{
 				SourceAccountID:      123,
 				DestinationAccountID: 123,

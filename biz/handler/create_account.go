@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 
+	"transfer_system/biz/apperror"
 	"transfer_system/biz/model"
 	"transfer_system/logs"
 
@@ -15,7 +16,7 @@ import (
 func (a *App) CreateAccount(ctx context.Context, c *app.RequestContext) {
 	var req model.NewAccount
 	if err := c.BindAndValidate(&req); err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		writeError(c, apperror.ErrInvalidRequest)
 		return
 	}
 

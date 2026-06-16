@@ -17,7 +17,7 @@ import (
 func (a *App) GetAccount(ctx context.Context, c *app.RequestContext) {
 	accountID, err := strconv.ParseInt(c.Param("account_id"), 10, 64)
 	if err != nil {
-		c.String(consts.StatusBadRequest, apperror.ErrInvalidAccount.Error())
+		writeError(c, apperror.ErrInvalidAccount)
 		return
 	}
 

@@ -3,6 +3,7 @@ package handler_test
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 	"testing"
 
@@ -58,7 +59,7 @@ func TestCreateAccountEndpoint(t *testing.T) {
 			body:       `{"account_id":123,"initial_balance":"100.23344"}`,
 			serviceErr: apperror.ErrAccountIdAlreadyExists,
 			wantStatus: consts.StatusBadRequest,
-			wantBody:   apperror.ErrAccountIdAlreadyExists.Error(),
+			wantBody:   errorJSON("ACCOUNT_ID_ALREADY_EXISTS", apperror.ErrAccountIdAlreadyExists.Error()),
 			wantReq: &model.NewAccount{
 				AccountID:      123,
 				InitialBalance: "100.23344",
@@ -69,7 +70,7 @@ func TestCreateAccountEndpoint(t *testing.T) {
 			body:       `{"account_id":124,"initial_balance":"100.233445"}`,
 			serviceErr: apperror.ErrInvalidAmount,
 			wantStatus: consts.StatusBadRequest,
-			wantBody:   apperror.ErrInvalidAmount.Error(),
+			wantBody:   errorJSON("INVALID_AMOUNT", apperror.ErrInvalidAmount.Error()),
 			wantReq: &model.NewAccount{
 				AccountID:      124,
 				InitialBalance: "100.233445",
@@ -79,13 +80,14 @@ func TestCreateAccountEndpoint(t *testing.T) {
 			name:       "invalid json",
 			body:       `{"account_id":125,"initial_balance":`,
 			wantStatus: consts.StatusBadRequest,
+			wantBody:   errorJSON("INVALID_REQUEST", apperror.ErrInvalidRequest.Error()),
 		},
 		{
 			name:       "internal error",
 			body:       `{"account_id":126,"initial_balance":"100.23344"}`,
 			serviceErr: apperror.ErrInternalError,
 			wantStatus: consts.StatusInternalServerError,
-			wantBody:   apperror.ErrInternalError.Error(),
+			wantBody:   errorJSON("INTERNAL_ERROR", apperror.ErrInternalError.Error()),
 			wantReq: &model.NewAccount{
 				AccountID:      126,
 				InitialBalance: "100.23344",
@@ -96,7 +98,7 @@ func TestCreateAccountEndpoint(t *testing.T) {
 			body:       `{"account_id":127,"initial_balance":"100.23344"}`,
 			serviceErr: errors.New("database connection failed"),
 			wantStatus: consts.StatusInternalServerError,
-			wantBody:   apperror.ErrInternalError.Error(),
+			wantBody:   errorJSON("INTERNAL_ERROR", apperror.ErrInternalError.Error()),
 			wantReq: &model.NewAccount{
 				AccountID:      127,
 				InitialBalance: "100.23344",
@@ -140,4 +142,8 @@ func TestCreateAccountEndpoint(t *testing.T) {
 			}
 		})
 	}
+}
+
+func errorJSON(code string, message string) string {
+	return fmt.Sprintf(`{"code":"%s","message":"%s"}`, code, message)
 }
