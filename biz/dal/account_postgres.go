@@ -58,10 +58,6 @@ func (r *PostgresAccountRepository) GetAccount(ctx context.Context, accountID in
 	return account, nil
 }
 
-func (r *PostgresAccountRepository) UpdateAccount(ctx context.Context, accountID int64, amount int64) error {
-	return updateAccount(ctx, r.db, accountID, amount)
-}
-
 func updateAccount(ctx context.Context, exec pgxExecutor, accountID int64, amount int64) error {
 	if amount > 0 {
 		return creditAccount(ctx, exec, accountID, amount)
