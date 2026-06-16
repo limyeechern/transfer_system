@@ -46,6 +46,7 @@ func TestFormatAmount5DP(t *testing.T) {
 		{name: "pads fewer decimals", input: 10023000, want: "100.23000"},
 		{name: "whole number", input: 10000000, want: "100.00000"},
 		{name: "zero", input: 0, want: "0.00000"},
+		{name: "negative amount", input: -10012345, want: "-100.12345"},
 	}
 
 	for _, tt := range tests {
