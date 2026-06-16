@@ -58,7 +58,7 @@ func (r *PostgresTransactionRepository) CreateTransaction(ctx context.Context, t
 
 func insertLedgerEntry(ctx context.Context, tx pgx.Tx, txID string, accountID int64, amount int64) error {
 	_, err := tx.Exec(ctx, `
-		INSERT INTO transactions (transaction_id, account_id, amount)
+		INSERT INTO ledger_entries (transaction_id, account_id, amount)
 		VALUES ($1, $2, $3)
 	`, txID, accountID, amount)
 	if err != nil {
@@ -69,7 +69,7 @@ func insertLedgerEntry(ctx context.Context, tx pgx.Tx, txID string, accountID in
 
 func mapTransactionError(err error) error {
 	var pgErr *pgconn.PgError
-	if errors.As(err, &pgErr) && pgErr.Code == "23503" && pgErr.ConstraintName == "transactions_account_id_fkey" {
+	if errors.As(err, &pgErr) && pgErr.Code == "23503" && pgErr.ConstraintName == "ledger_entries_account_id_fkey" {
 		return apperror.ErrAccountNotFound
 	}
 	if errors.As(err, &pgErr) && pgErr.Code == "23514" {

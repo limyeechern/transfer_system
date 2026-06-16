@@ -5,18 +5,18 @@ CREATE TABLE IF NOT EXISTS accounts (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS transactions (
+CREATE TABLE IF NOT EXISTS ledger_entries (
     transaction_id TEXT NOT NULL,
     account_id BIGINT NOT NULL REFERENCES accounts(account_id),
     amount BIGINT NOT NULL CHECK (amount <> 0),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_transactions_transaction_id
-ON transactions(transaction_id);
+CREATE INDEX IF NOT EXISTS idx_ledger_entries_transaction_id
+ON ledger_entries(transaction_id);
 
-CREATE INDEX IF NOT EXISTS idx_transactions_account_id
-ON transactions(account_id);
+CREATE INDEX IF NOT EXISTS idx_ledger_entries_account_id
+ON ledger_entries(account_id);
 
-CREATE INDEX IF NOT EXISTS idx_transactions_created_at
-ON transactions(created_at);
+CREATE INDEX IF NOT EXISTS idx_ledger_entries_created_at
+ON ledger_entries(created_at);
