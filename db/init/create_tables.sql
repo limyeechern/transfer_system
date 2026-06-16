@@ -6,15 +6,17 @@ CREATE TABLE IF NOT EXISTS accounts (
 );
 
 CREATE TABLE IF NOT EXISTS transactions (
-    transaction_id BIGSERIAL PRIMARY KEY,
-    source_account_id BIGINT NOT NULL REFERENCES accounts(account_id),
-    destination_account_id BIGINT NOT NULL REFERENCES accounts(account_id),
-    amount BIGINT NOT NULL CHECK (amount > 0),
+    transaction_id TEXT NOT NULL,
+    account_id BIGINT NOT NULL REFERENCES accounts(account_id),
+    amount BIGINT NOT NULL CHECK (amount <> 0),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_transactions_source_account_id
-ON transactions(source_account_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_transaction_id
+ON transactions(transaction_id);
 
-CREATE INDEX IF NOT EXISTS idx_transactions_destination_account_id
-ON transactions(destination_account_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_account_id
+ON transactions(account_id);
+
+CREATE INDEX IF NOT EXISTS idx_transactions_created_at
+ON transactions(created_at);

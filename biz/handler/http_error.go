@@ -18,7 +18,8 @@ func statusCodeForError(err error) int {
 	case errors.Is(err, apperror.ErrInvalidRequest),
 		errors.Is(err, apperror.ErrInvalidAccount),
 		errors.Is(err, apperror.ErrInvalidAmount),
-		errors.Is(err, apperror.ErrAccountIdAlreadyExists):
+		errors.Is(err, apperror.ErrAccountIdAlreadyExists),
+		errors.Is(err, apperror.ErrInsufficientBalance):
 		return consts.StatusBadRequest
 	case errors.Is(err, apperror.ErrAccountNotFound):
 		return consts.StatusNotFound
@@ -33,6 +34,7 @@ func messageForError(err error) string {
 		errors.Is(err, apperror.ErrInvalidAccount),
 		errors.Is(err, apperror.ErrInvalidAmount),
 		errors.Is(err, apperror.ErrAccountIdAlreadyExists),
+		errors.Is(err, apperror.ErrInsufficientBalance),
 		errors.Is(err, apperror.ErrAccountNotFound),
 		errors.Is(err, apperror.ErrInternalError):
 		return err.Error()

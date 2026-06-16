@@ -2,8 +2,14 @@ package dal
 
 import (
 	"context"
-	"transfer_system/biz/model"
+	"errors"
 
+	"transfer_system/biz/apperror"
+	"transfer_system/biz/model"
+	"transfer_system/biz/util"
+
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -15,8 +21,59 @@ func NewPostgresTransactionRepository(db *pgxpool.Pool) TransactionRepository {
 	return &PostgresTransactionRepository{db: db}
 }
 
-// remember to do double entry ledger
+func (r *PostgresTransactionRepository) CreateTransaction(ctx context.Context, txID string, sourceAccountID int64, destinationAccountID int64, amount int64) (*model.Transaction, error) {
+	dbTx, err := r.db.Begin(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer dbTx.Rollback(ctx)
 
-func (r *PostgresTransactionRepository) CreateTransaction(ctx context.Context, sourceAccountId int64, destinationAccountId int64, amount int64) (*model.Transaction, error) {
-	return nil, nil
+	if err := insertLedgerEntry(ctx, dbTx, txID, sourceAccountID, -amount); err != nil {
+		return nil, err
+	}
+	if err := insertLedgerEntry(ctx, dbTx, txID, destinationAccountID, amount); err != nil {
+		return nil, err
+	}
+	// Potential optimisation: keep this write path ledger-only by inserting the
+	// two entries above, then let a background job project cached account
+	// balances. That needs a separate overdraft design because the synchronous
+	// source balance update is what currently enforces sufficient funds.
+	if err := updateAccount(ctx, dbTx, sourceAccountID, -amount); err != nil {
+		return nil, err
+	}
+	if err := updateAccount(ctx, dbTx, destinationAccountID, amount); err != nil {
+		return nil, err
+	}
+	if err := dbTx.Commit(ctx); err != nil {
+		return nil, err
+	}
+
+	return &model.Transaction{
+		TransactionID:        txID,
+		SourceAccountID:      sourceAccountID,
+		DestinationAccountID: destinationAccountID,
+		Amount:               util.FormatAmount5DP(amount),
+	}, nil
+}
+
+func insertLedgerEntry(ctx context.Context, tx pgx.Tx, txID string, accountID int64, amount int64) error {
+	_, err := tx.Exec(ctx, `
+		INSERT INTO transactions (transaction_id, account_id, amount)
+		VALUES ($1, $2, $3)
+	`, txID, accountID, amount)
+	if err != nil {
+		return mapTransactionError(err)
+	}
+	return nil
+}
+
+func mapTransactionError(err error) error {
+	var pgErr *pgconn.PgError
+	if errors.As(err, &pgErr) && pgErr.Code == "23503" && pgErr.ConstraintName == "transactions_account_id_fkey" {
+		return apperror.ErrAccountNotFound
+	}
+	if errors.As(err, &pgErr) && pgErr.Code == "23514" {
+		return apperror.ErrInvalidAmount
+	}
+	return err
 }

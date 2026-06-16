@@ -38,7 +38,7 @@ func (s *CreateTransactionServiceImpl) Create(ctx context.Context, req *model.Tr
 		return nil, err
 	}
 
-	return s.transactions.CreateTransaction(ctx, req.SourceAccountID, req.DestinationAccountID, amount)
+	return s.transactions.CreateTransaction(ctx, util.GenerateTxID(), req.SourceAccountID, req.DestinationAccountID, amount)
 }
 
 func (s *CreateTransactionServiceImpl) Validate(ctx context.Context, req *model.Transaction) error {
@@ -51,8 +51,15 @@ func (s *CreateTransactionServiceImpl) Validate(ctx context.Context, req *model.
 	if req.SourceAccountID <= 0 || req.DestinationAccountID <= 0 {
 		return apperror.ErrInvalidAccount
 	}
-	if _, err := util.ParseAmount5DP(req.Amount); err != nil {
+	if req.SourceAccountID == req.DestinationAccountID {
+		return apperror.ErrInvalidTransaction
+	}
+	amount, err := util.ParseAmount5DP(req.Amount)
+	if err != nil {
 		return err
+	}
+	if amount == 0 {
+		return apperror.ErrInvalidAmount
 	}
 	return nil
 }

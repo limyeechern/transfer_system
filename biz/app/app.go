@@ -45,8 +45,8 @@ func New(ctx context.Context, cfg Config) (*handler.App, func(), error) {
 	}
 
 	return handler.NewApp(handler.Dependencies{
-		CreateAccountService: createAccountService,
-		GetAccountService:    getAccountService,
+		CreateAccountService:     createAccountService,
+		GetAccountService:        getAccountService,
 		CreateTransactionService: createTransactionService,
 	}), cleanup, nil
 }
