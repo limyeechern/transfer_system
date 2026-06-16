@@ -14,7 +14,7 @@ import (
 Register registers routes for the transfer system API.
 */
 func Register(r *server.Hertz, handlerApp *handler.App) {
-	root := r.Group("/")
+	root := r.Group("/", RootMiddleware()...)
 	{
 		root.GET("/ping", func(ctx context.Context, c *hertzapp.RequestContext) {
 			c.String(consts.StatusOK, "pong")

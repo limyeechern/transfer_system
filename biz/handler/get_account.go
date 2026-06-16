@@ -6,10 +6,10 @@ import (
 
 	"transfer_system/biz/apperror"
 	"transfer_system/biz/model"
+	"transfer_system/logs"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
-	"github.com/sirupsen/logrus"
 )
 
 // GetAccount .
@@ -33,10 +33,14 @@ func (a *App) GetAccount(ctx context.Context, c *app.RequestContext) {
 func (a *App) GetAccountResp(ctx context.Context, params *model.GetAccount) (*model.Account, error) {
 	respData, err := a.GetAccountService.Read(ctx, params)
 	if err != nil {
-		logrus.WithContext(ctx).WithField("params", params).Error("failed to get account")
+		logs.CtxError(ctx, "failed to get account", err, logs.Fields{
+			"params": params,
+		})
 		return nil, err
 	}
 
-	logrus.WithContext(ctx).WithField("account_id", respData.AccountID).Info("successfully got account")
+	logs.CtxInfo(ctx, "successfully got account", logs.Fields{
+		"account_id": respData.AccountID,
+	})
 	return respData, nil
 }

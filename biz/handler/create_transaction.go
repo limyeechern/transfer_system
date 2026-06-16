@@ -3,10 +3,10 @@ package handler
 import (
 	"context"
 	"transfer_system/biz/model"
+	"transfer_system/logs"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
-	"github.com/sirupsen/logrus"
 )
 
 // CreateTransaction .
@@ -30,10 +30,14 @@ func (a *App) CreateTransaction(ctx context.Context, c *app.RequestContext) {
 func (a *App) CreateTransactionResp(ctx context.Context, params *model.Transaction) (*model.EmptyResponse, error) {
 	_, err := a.CreateTransactionService.Create(ctx, params)
 	if err != nil {
-		logrus.WithContext(ctx).WithField("params", params).Error("failed to create transaction")
+		logs.CtxError(ctx, "failed to create transaction", err, logs.Fields{
+			"params": params,
+		})
 		return nil, err
 	}
 
-	logrus.WithContext(ctx).Info("successfully created transaction")
+	logs.CtxInfo(ctx, "successfully created transaction", logs.Fields{
+		"params": params,
+	})
 	return &model.EmptyResponse{}, nil
 }

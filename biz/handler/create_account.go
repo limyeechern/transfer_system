@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"transfer_system/biz/model"
+	"transfer_system/logs"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
-	"github.com/sirupsen/logrus"
 )
 
 // CreateAccount .
@@ -31,10 +31,14 @@ func (a *App) CreateAccount(ctx context.Context, c *app.RequestContext) {
 func (a *App) CreateAccountResp(ctx context.Context, params *model.NewAccount) (*model.EmptyResponse, error) {
 	_, err := a.CreateAccountService.Create(ctx, params)
 	if err != nil {
-		logrus.WithContext(ctx).WithField("params", params).Error("failed to create account")
+		logs.CtxError(ctx, "failed to create account", err, logs.Fields{
+			"params": params,
+		})
 		return nil, err
 	}
 
-	logrus.WithContext(ctx).Info("successfully created account")
+	logs.CtxInfo(ctx, "successfully created account", logs.Fields{
+		"params": params,
+	})
 	return &model.EmptyResponse{}, nil
 }
