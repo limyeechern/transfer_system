@@ -19,6 +19,7 @@ go mod download
 ### Set Up
 
 ```sh
+git clone https://github.com/limyeechern/transfer_system.git
 cp example.env .env
 ```
 
