@@ -29,7 +29,7 @@ func (a *App) CreateTransaction(ctx context.Context, c *app.RequestContext) {
 }
 
 func (a *App) CreateTransactionResp(ctx context.Context, params *model.Transaction) (*model.EmptyResponse, error) {
-	_, err := a.CreateTransactionService.Create(ctx, params)
+	transaction, err := a.CreateTransactionService.Create(ctx, params)
 	if err != nil {
 		logs.CtxError(ctx, "failed to create transaction", err, logs.Fields{
 			"params": params,
@@ -38,7 +38,10 @@ func (a *App) CreateTransactionResp(ctx context.Context, params *model.Transacti
 	}
 
 	logs.CtxInfo(ctx, "successfully created transaction", logs.Fields{
-		"params": params,
+		"transaction_id":         transaction.TransactionID,
+		"source_account_id":      transaction.SourceAccountID,
+		"destination_account_id": transaction.DestinationAccountID,
+		"amount":                 transaction.Amount,
 	})
 	return &model.EmptyResponse{}, nil
 }

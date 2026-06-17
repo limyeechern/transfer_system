@@ -28,7 +28,16 @@ func (r *TransactionRepository) CreateTransaction(ctx context.Context, txID stri
 		return nil, err
 	}
 
-	r.client.Del(ctx, accountKey(sourceAccountID), accountKey(destinationAccountID))
-	logs.CtxInfo(ctx, "redis cache key invalidated", logs.Fields{"sourceAccountID": sourceAccountID, "destinationAccountID": destinationAccountID})
+	if err := r.client.Del(ctx, accountKey(sourceAccountID), accountKey(destinationAccountID)).Err(); err != nil {
+		logs.CtxError(ctx, "failed to invalidate redis cache keys", err, logs.Fields{
+			"source_account_id":      sourceAccountID,
+			"destination_account_id": destinationAccountID,
+		})
+		return transaction, nil
+	}
+	logs.CtxInfo(ctx, "redis cache keys invalidated", logs.Fields{
+		"source_account_id":      sourceAccountID,
+		"destination_account_id": destinationAccountID,
+	})
 	return transaction, nil
 }

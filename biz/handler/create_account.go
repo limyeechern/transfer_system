@@ -30,7 +30,7 @@ func (a *App) CreateAccount(ctx context.Context, c *app.RequestContext) {
 }
 
 func (a *App) CreateAccountResp(ctx context.Context, params *model.NewAccount) (*model.EmptyResponse, error) {
-	_, err := a.CreateAccountService.Create(ctx, params)
+	account, err := a.CreateAccountService.Create(ctx, params)
 	if err != nil {
 		logs.CtxError(ctx, "failed to create account", err, logs.Fields{
 			"params": params,
@@ -39,7 +39,8 @@ func (a *App) CreateAccountResp(ctx context.Context, params *model.NewAccount) (
 	}
 
 	logs.CtxInfo(ctx, "successfully created account", logs.Fields{
-		"params": params,
+		"account_id": account.AccountID,
+		"balance":    account.Balance,
 	})
 	return &model.EmptyResponse{}, nil
 }
