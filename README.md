@@ -34,6 +34,7 @@ Default environment variables:
 
 ```sh
 DATABASE_URL=postgres://transfer_system:transfer_system@127.0.0.1:15432/transfer_system?sslmode=disable
+TEST_DATABASE_URL="postgres://transfer_system:transfer_system@127.0.0.1:15433/transfer_system_test?sslmode=disable"
 REDIS_ADDR=127.0.0.1:6379
 ```
 
