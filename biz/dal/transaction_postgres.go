@@ -28,6 +28,10 @@ func (r *PostgresTransactionRepository) CreateTransaction(ctx context.Context, t
 	}
 	defer dbTx.Rollback(ctx)
 
+	if err := lockTransferAccounts(ctx, dbTx, sourceAccountID, destinationAccountID); err != nil {
+		return nil, err
+	}
+
 	if err := insertLedgerEntry(ctx, dbTx, txID, sourceAccountID, -amount); err != nil {
 		return nil, err
 	}
@@ -54,6 +58,32 @@ func (r *PostgresTransactionRepository) CreateTransaction(ctx context.Context, t
 		DestinationAccountID: destinationAccountID,
 		Amount:               util.FormatAmount5DP(amount),
 	}, nil
+}
+
+func lockTransferAccounts(ctx context.Context, tx pgx.Tx, sourceAccountID int64, destinationAccountID int64) error {
+	firstAccountID, secondAccountID := sourceAccountID, destinationAccountID
+	if secondAccountID < firstAccountID {
+		firstAccountID, secondAccountID = secondAccountID, firstAccountID
+	}
+
+	if err := lockAccount(ctx, tx, firstAccountID); err != nil {
+		return err
+	}
+	return lockAccount(ctx, tx, secondAccountID)
+}
+
+func lockAccount(ctx context.Context, tx pgx.Tx, accountID int64) error {
+	var lockedAccountID int64
+	err := tx.QueryRow(ctx, `
+		SELECT account_id
+		FROM accounts
+		WHERE account_id = $1
+		FOR UPDATE
+	`, accountID).Scan(&lockedAccountID)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return apperror.ErrAccountNotFound
+	}
+	return err
 }
 
 func insertLedgerEntry(ctx context.Context, tx pgx.Tx, txID string, accountID int64, amount int64) error {
