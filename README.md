@@ -26,6 +26,7 @@ The default local services are:
 
 - API: `http://127.0.0.1:8080`
 - Postgres: `127.0.0.1:15432`
+- Test Postgres: `127.0.0.1:15433`
 - Redis: `127.0.0.1:6379`
 
 Default environment variables:
@@ -54,8 +55,16 @@ make docker-logs
 Run tests:
 
 ```sh
-go test ./...
+make test
 ```
+
+Run Postgres integration tests:
+
+```sh
+make test-integration
+```
+
+The integration tests use a dedicated Docker Compose database named `transfer_system_test` on port `15433`.
 
 ### API Examples
 
@@ -84,11 +93,12 @@ curl -X POST http://127.0.0.1:8080/transactions \
 ## Flowchart
 
 ### 1. Creating Transaction
+
 <img width="804" height="774" alt="image" src="https://github.com/user-attachments/assets/6f95e8ba-b07a-4b0e-8872-57b8fc2d7ec7" />
 
 ### 2. Getting Account
-<img width="556" height="764" alt="image" src="https://github.com/user-attachments/assets/ac06cb57-0c9f-4feb-8999-d583985678ff" />
 
+<img width="556" height="764" alt="image" src="https://github.com/user-attachments/assets/ac06cb57-0c9f-4feb-8999-d583985678ff" />
 
 ## Assumptions
 
