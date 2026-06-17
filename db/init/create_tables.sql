@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS accounts (
 );
 
 CREATE TABLE IF NOT EXISTS ledger_entries (
+    ledger_entry_id BIGSERIAL PRIMARY KEY,
     transaction_id TEXT NOT NULL,
     account_id BIGINT NOT NULL REFERENCES accounts(account_id),
     amount BIGINT NOT NULL CHECK (amount <> 0),
